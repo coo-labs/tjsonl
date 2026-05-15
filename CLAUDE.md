@@ -36,6 +36,14 @@ The `_preflight` check enforces `op` and `age`; missing tools fail fast with a c
 
 Each line is one JSON event from a Claude Code session. Top-level `type` discriminates (`attachment`, `user`, `assistant`, tool results, etc.). Useful fields when slicing: `sessionId`, `timestamp`, `cwd`, `gitBranch`, `parentUuid`/`uuid` (threading), `isSidechain` (sub-agent calls), `version` (CC version), and hook payloads under `attachment`. High-entropy strings are pre-redacted as `[REDACTED:high-entropy]` — assume any remaining content is intentional.
 
+## Git hygiene
+
+The repo uses a tracked pre-commit hook at [hooks/pre-commit](hooks/pre-commit) that hard-blocks any staged path under `transcripts/` or ending in `.jsonl`. It's belt-and-suspenders against the gitignore — transcripts are sensitive and history-scrubbing a pushed repo is painful. Enable on a fresh clone with:
+
+```bash
+git config core.hooksPath hooks
+```
+
 ## When extending
 
 - Analysis code should be additive — new scripts/notebooks alongside `bin/transcript-pull-local.py`, not edits to it (it tracks an upstream).

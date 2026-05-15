@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+# Hard-block any staged path under transcripts/ or with a .jsonl extension.
+# Decrypted transcripts are sensitive — gitignored, but a typo or `git add -f`
+# could still slip one in. Scrubbing history on a pushed repo is painful, so
+# we refuse the commit up front.
+#
+# Enable with: git config core.hooksPath hooks
+
+set -euo pipefail
+
+bad=$(git diff --cached --name-only --diff-filter=ACM \
+        | grep -E '(^transcripts/|\.jsonl$)' || true)
+
+if [ -n "$bad" ]; then
+    echo "pre-commit: refusing to commit transcript content:" >&2
+    echo "$bad" | sed 's/^/  /' >&2
+    echo "" >&2
+    echo "  transcripts/ is gitignored on purpose. If you really need to" >&2
+    echo "  bypass (you almost certainly don't), use --no-verify." >&2
+    exit 1
+fi
