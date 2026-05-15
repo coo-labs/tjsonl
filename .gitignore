@@ -1,0 +1,17 @@
+# Decrypted session transcripts — sensitive (redacted but still raw), regenerable via bin/transcript-pull-local.py
+transcripts/
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# Claude Code per-user local settings
+.claude/settings.local.json
+
+# Editors / OS
+.DS_Store
+.idea/
+.vscode/
+*.swp
