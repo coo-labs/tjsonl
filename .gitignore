@@ -1,5 +1,6 @@
 # Decrypted session transcripts — sensitive (redacted but still raw), regenerable via bin/transcript-pull-local.py
 transcripts/
+audits/
 
 # Python
 __pycache__/
