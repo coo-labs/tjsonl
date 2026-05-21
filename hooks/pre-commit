@@ -9,7 +9,9 @@
 set -euo pipefail
 
 bad=$(git diff --cached --name-only --diff-filter=ACM \
-        | grep -E '(^transcripts/|\.jsonl$)' || true)
+        | grep -E '(^transcripts/|\.jsonl$)' \
+        | grep -vE '^tests/fixtures/.*\.jsonl$' \
+        || true)
 
 if [ -n "$bad" ]; then
     echo "pre-commit: refusing to commit transcript content:" >&2

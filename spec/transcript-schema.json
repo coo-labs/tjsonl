@@ -1,0 +1,408 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/vade-app/coo-transcripts-analysis/spec/transcript-schema.json",
+  "title": "Claude Code transcript JSONL line schema",
+  "description": "Schema for a single line of a Claude Code transcript jsonl file. Lifted from coo-transcripts-analysis/spec/transcript-schema-spec.md (v0.1.0). Discriminator is top-level `type`. Per-tool `tool_use.input` shapes are an extension point and are not validated structurally by this document.",
+  "schema_version": "0.1.0",
+  "$defs": {
+    "isoTimestamp": {
+      "type": "string",
+      "description": "ISO-8601 UTC timestamp"
+    },
+    "commonRich": {
+      "description": "Fields present on every `assistant`, `attachment`, `user`, `system` line. The `required` block is the strict eleven-field intersection; the `properties` block also documents the common envelope optionals enumerated in the spec (slug, isMeta, logicalParentUuid).",
+      "type": "object",
+      "required": [
+        "type",
+        "sessionId",
+        "uuid",
+        "parentUuid",
+        "timestamp",
+        "cwd",
+        "entrypoint",
+        "gitBranch",
+        "isSidechain",
+        "userType",
+        "version"
+      ],
+      "properties": {
+        "type": {"type": "string"},
+        "sessionId": {"type": "string"},
+        "uuid": {"type": "string"},
+        "parentUuid": {"type": ["string", "null"]},
+        "timestamp": {"$ref": "#/$defs/isoTimestamp"},
+        "cwd": {"type": "string"},
+        "entrypoint": {"type": "string"},
+        "gitBranch": {"type": "string"},
+        "isSidechain": {"type": "boolean"},
+        "userType": {"type": "string"},
+        "version": {"type": "string"},
+        "slug": {"type": "string"},
+        "isMeta": {"type": "boolean"},
+        "logicalParentUuid": {"type": ["string", "null"]}
+      }
+    },
+    "usage": {
+      "type": "object",
+      "required": [
+        "input_tokens",
+        "output_tokens",
+        "cache_creation_input_tokens",
+        "cache_read_input_tokens"
+      ],
+      "properties": {
+        "input_tokens": {"type": "integer"},
+        "output_tokens": {"type": "integer"},
+        "cache_creation_input_tokens": {"type": "integer"},
+        "cache_read_input_tokens": {"type": "integer"},
+        "server_tool_use": {"type": "object"},
+        "service_tier": {"type": "string"}
+      }
+    },
+    "contentBlockAssistant": {
+      "oneOf": [
+        {
+          "type": "object",
+          "required": ["type", "text"],
+          "properties": {
+            "type": {"const": "text"},
+            "text": {"type": "string"}
+          }
+        },
+        {
+          "type": "object",
+          "required": ["type", "thinking"],
+          "properties": {
+            "type": {"const": "thinking"},
+            "thinking": {"type": "string"},
+            "signature": {"type": "string"}
+          }
+        },
+        {
+          "type": "object",
+          "required": ["type", "id", "name", "input"],
+          "properties": {
+            "type": {"const": "tool_use"},
+            "id": {"type": "string"},
+            "name": {"type": "string"},
+            "input": {"type": "object"}
+          }
+        }
+      ]
+    },
+    "contentBlockUser": {
+      "oneOf": [
+        {
+          "type": "object",
+          "required": ["type", "text"],
+          "properties": {
+            "type": {"const": "text"},
+            "text": {"type": "string"}
+          }
+        },
+        {
+          "type": "object",
+          "required": ["type", "tool_use_id", "content"],
+          "properties": {
+            "type": {"const": "tool_result"},
+            "tool_use_id": {"type": "string"},
+            "content": {
+              "oneOf": [
+                {"type": "string"},
+                {"type": "array"}
+              ]
+            },
+            "is_error": {"type": "boolean"}
+          }
+        }
+      ]
+    },
+    "hookSuccessPayload": {
+      "description": "attachment.hook_success payload — fully specified in v0.1 per vade-app/vade-agent-logs#381.",
+      "type": "object",
+      "required": [
+        "type",
+        "hookName",
+        "toolUseID",
+        "hookEvent",
+        "content",
+        "stdout",
+        "stderr",
+        "exitCode",
+        "command",
+        "durationMs"
+      ],
+      "properties": {
+        "type": {"const": "hook_success"},
+        "hookName": {"type": "string"},
+        "toolUseID": {"type": "string"},
+        "hookEvent": {
+          "type": "string",
+          "description": "Bare hook event name; one of SessionStart, PreToolUse, PostToolUse, UserPromptSubmit, Stop, SubagentStop, Notification."
+        },
+        "content": {"type": "string"},
+        "stdout": {"type": "string"},
+        "stderr": {"type": "string"},
+        "exitCode": {"type": "integer"},
+        "command": {"type": "string"},
+        "durationMs": {"type": "integer"}
+      }
+    }
+  },
+  "oneOf": [
+    {
+      "title": "assistant",
+      "allOf": [
+        {"$ref": "#/$defs/commonRich"},
+        {
+          "type": "object",
+          "required": ["message"],
+          "properties": {
+            "type": {"const": "assistant"},
+            "message": {
+              "type": "object",
+              "required": ["id", "type", "role", "model", "content", "stop_reason", "stop_sequence", "usage"],
+              "properties": {
+                "id": {"type": "string"},
+                "type": {"const": "message"},
+                "role": {"const": "assistant"},
+                "model": {"type": "string"},
+                "content": {
+                  "type": "array",
+                  "items": {"$ref": "#/$defs/contentBlockAssistant"}
+                },
+                "stop_reason": {"type": ["string", "null"]},
+                "stop_sequence": {"type": ["string", "null"]},
+                "usage": {"$ref": "#/$defs/usage"}
+              }
+            },
+            "agentId": {"type": "string"},
+            "attributionAgent": {"type": "string"},
+            "attributionSkill": {"type": "string"},
+            "requestId": {"type": "string"},
+            "costUSD": {"type": "number"},
+            "isApiErrorMessage": {"type": "boolean"},
+            "error": {"type": "object"},
+            "apiErrorStatus": {"type": ["integer", "string"]},
+            "content": {
+              "oneOf": [
+                {"type": "string"},
+                {"type": "array"}
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "title": "user",
+      "allOf": [
+        {"$ref": "#/$defs/commonRich"},
+        {
+          "type": "object",
+          "required": ["message"],
+          "properties": {
+            "type": {"const": "user"},
+            "message": {
+              "type": "object",
+              "required": ["role", "content"],
+              "properties": {
+                "role": {"const": "user"},
+                "content": {
+                  "oneOf": [
+                    {"type": "string"},
+                    {
+                      "type": "array",
+                      "items": {"$ref": "#/$defs/contentBlockUser"}
+                    }
+                  ]
+                }
+              }
+            },
+            "promptId": {"type": "string"},
+            "agentId": {"type": "string"},
+            "isMeta": {"type": "boolean"},
+            "isVisibleInTranscriptOnly": {"type": "boolean"},
+            "isCompactSummary": {"type": "boolean"},
+            "mcpMeta": {"type": "object"},
+            "origin": {"type": "object"},
+            "permissionMode": {"type": "string"},
+            "sourceToolAssistantUUID": {"type": "string"},
+            "sourceToolUseID": {"type": "string"},
+            "toolUseResult": {"type": "object"},
+            "content": {
+              "oneOf": [
+                {"type": "string"},
+                {"type": "array"}
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "title": "attachment",
+      "allOf": [
+        {"$ref": "#/$defs/commonRich"},
+        {
+          "type": "object",
+          "required": ["attachment"],
+          "properties": {
+            "type": {"const": "attachment"},
+            "agentId": {"type": "string"},
+            "attachment": {
+              "type": "object",
+              "required": ["type"],
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "enum": [
+                    "command_permissions",
+                    "compact_file_reference",
+                    "date_change",
+                    "deferred_tools_delta",
+                    "dynamic_skill",
+                    "edited_text_file",
+                    "file",
+                    "hook_additional_context",
+                    "hook_blocking_error",
+                    "hook_non_blocking_error",
+                    "hook_success",
+                    "hook_system_message",
+                    "nested_memory",
+                    "plan_file_reference",
+                    "plan_mode",
+                    "plan_mode_exit",
+                    "queued_command",
+                    "skill_listing",
+                    "task_status",
+                    "todo_reminder",
+                    "ultrathink_effort"
+                  ]
+                }
+              },
+              "allOf": [
+                {
+                  "if": {"properties": {"type": {"const": "hook_success"}}},
+                  "then": {"$ref": "#/$defs/hookSuccessPayload"}
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "title": "last-prompt",
+      "type": "object",
+      "required": ["type", "sessionId", "leafUuid"],
+      "properties": {
+        "type": {"const": "last-prompt"},
+        "sessionId": {"type": "string"},
+        "leafUuid": {"type": "string"},
+        "lastPrompt": {"type": "string"}
+      }
+    },
+    {
+      "title": "queue-operation",
+      "type": "object",
+      "required": ["type", "sessionId"],
+      "properties": {
+        "type": {"const": "queue-operation"},
+        "sessionId": {"type": "string"},
+        "timestamp": {"$ref": "#/$defs/isoTimestamp"},
+        "operation": {"type": "string"},
+        "content": true
+      }
+    },
+    {
+      "title": "system",
+      "allOf": [
+        {"$ref": "#/$defs/commonRich"},
+        {
+          "type": "object",
+          "required": ["subtype"],
+          "properties": {
+            "type": {"const": "system"},
+            "subtype": {
+              "type": "string",
+              "enum": [
+                "away_summary",
+                "bridge_status",
+                "compact_boundary",
+                "local_command",
+                "scheduled_task_fire",
+                "stop_hook_summary",
+                "turn_duration",
+                "hook_callback"
+              ]
+            },
+            "level": {"type": "string"},
+            "toolUseID": {"type": "string"},
+            "hookCount": {"type": "integer"},
+            "hookErrors": {"type": "array"},
+            "hookInfos": {"type": "array"},
+            "hasOutput": {"type": "boolean"},
+            "preventedContinuation": {"type": "boolean"},
+            "stopReason": {"type": "string"},
+            "content": {"type": "string"},
+            "compactMetadata": {"type": "object"},
+            "error": {"type": "object"},
+            "retryInMs": {"type": "integer"},
+            "retryAttempt": {"type": "integer"},
+            "maxRetries": {"type": "integer"}
+          }
+        }
+      ]
+    },
+    {
+      "title": "pr-link",
+      "type": "object",
+      "required": ["type", "sessionId", "prNumber", "prUrl", "prRepository", "timestamp"],
+      "properties": {
+        "type": {"const": "pr-link"},
+        "sessionId": {"type": "string"},
+        "prNumber": {"type": "integer"},
+        "prUrl": {"type": "string"},
+        "prRepository": {"type": "string"},
+        "timestamp": {"$ref": "#/$defs/isoTimestamp"}
+      }
+    },
+    {
+      "title": "agent-name",
+      "type": "object",
+      "required": ["type", "sessionId"],
+      "properties": {
+        "type": {"const": "agent-name"},
+        "sessionId": {"type": "string"}
+      }
+    },
+    {
+      "title": "custom-title",
+      "type": "object",
+      "required": ["type", "sessionId"],
+      "properties": {
+        "type": {"const": "custom-title"},
+        "sessionId": {"type": "string"}
+      }
+    },
+    {
+      "title": "file-history-snapshot",
+      "type": "object",
+      "required": ["type", "sessionId"],
+      "properties": {
+        "type": {"const": "file-history-snapshot"},
+        "sessionId": {"type": "string"}
+      }
+    },
+    {
+      "title": "permission-mode",
+      "type": "object",
+      "required": ["type", "sessionId"],
+      "properties": {
+        "type": {"const": "permission-mode"},
+        "sessionId": {"type": "string"}
+      }
+    }
+  ]
+}

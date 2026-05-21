@@ -1,0 +1,70 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "coo-transcripts-analysis"
+version = "0.1.0"
+description = "Claude Code transcript jsonl schema extractor + validator (tj)"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [
+  { name = "vade-app COO" },
+]
+keywords = [
+  "claude-code",
+  "transcript",
+  "jsonl",
+  "schema",
+  "validator",
+]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Intended Audience :: Developers",
+  "License :: OSI Approved :: MIT License",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3 :: Only",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Topic :: Software Development :: Libraries",
+]
+dependencies = []
+
+[project.optional-dependencies]
+test = ["pytest>=7,<9"]
+
+[project.scripts]
+tj = "coo_transcripts_analysis.tj.cli:main"
+
+[project.urls]
+Homepage = "https://github.com/vade-app/coo-transcripts-analysis"
+Issues = "https://github.com/vade-app/vade-agent-logs/issues/381"
+Spec = "https://github.com/vade-app/coo-transcripts-analysis/blob/main/spec/transcript-schema-spec.md"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/coo_transcripts_analysis"]
+include = ["spec/transcript-schema.json"]
+
+[tool.hatch.build.targets.wheel.shared-data]
+"spec/transcript-schema.json" = "share/coo_transcripts_analysis/spec/transcript-schema.json"
+
+[tool.hatch.build.targets.sdist]
+include = [
+  "/src",
+  "/spec",
+  "/tests",
+  "/README.md",
+  "/LICENSE",
+  "/CLAUDE.md",
+  "/pyproject.toml",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = ["-ra", "--strict-markers"]
+markers = [
+  "integration: requires the local R2 transcript cache under transcripts/",
+]

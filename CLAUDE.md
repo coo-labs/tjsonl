@@ -4,12 +4,48 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Purpose
 
-Side project for fetching and analyzing Claude Code session transcripts from remote sessions working in the **vade-app** GitHub org and its repositories. Currently in initial state — the pull/decrypt pipeline exists; concrete analysis goals are TBD.
+Tooling and a community-authored schema spec for the Claude Code transcript JSONL format. Two surfaces live here:
+
+1. **`spec/`** — the v0.1 schema spec ([`transcript-schema-spec.md`](spec/transcript-schema-spec.md) + machine-readable [`transcript-schema.json`](spec/transcript-schema.json)). Observation-grounded; lifted from the merged proposal at [vade-coo-memory#864](https://github.com/vade-app/vade-coo-memory/pull/864).
+2. **`tj`** — a thin Python library + CLI under [`src/coo_transcripts_analysis/tj/`](src/coo_transcripts_analysis/tj/) that extracts, validates, and walks transcript jsonls. Implementation issue: [vade-app/vade-agent-logs#381](https://github.com/vade-app/vade-agent-logs/issues/381).
+
+There is also [`bin/transcript-pull-local.py`](bin/transcript-pull-local.py) — the operator's R2 → local-cache puller, vendored from `vade-app/vade-runtime`. It populates `transcripts/` for ad-hoc analysis and as the integration-test corpus.
 
 ## Layout
 
-- `bin/transcript-pull-local.py` — the one script. Downloads ciphertext from R2, decrypts via `age`, gunzips, lands `<session_id>.jsonl` in `transcripts/`. Vendored from `vade-app/vade-runtime/scripts/transcript-pull-local.py` — keep that lineage in mind before adding repo-specific divergence.
-- `transcripts/` — decrypted plaintext JSONL, one file per session. ~160 files currently. **Redacted but still sensitive** (this is the rawest form the storage tier holds — see script docstring). Do not commit transcripts; do not paste contents into external tools.
+```
+spec/
+  transcript-schema-spec.md   ← canonical markdown spec
+  transcript-schema.json      ← JSONSchema Draft 2020-12 rendering
+src/coo_transcripts_analysis/
+  __init__.py
+  tj/
+    __init__.py               ← public API exports
+    walk.py                   ← line-by-line iterator primitive
+    extract.py                ← observed-schema extractor
+    validate.py               ← spec validator
+    cli.py                    ← `tj` CLI entry point
+    _spec.py                  ← spec loader + derived constants
+tests/
+  fixtures/                   ← synthetic jsonl inputs
+  test_walk.py / test_extract.py / test_validate.py / test_cli.py
+  integration/test_session_start_resume.py   ← acceptance falsifier
+bin/
+  transcript-pull-local.py    ← R2 → local-cache (operator tool, vendored)
+transcripts/                  ← .gitignored cache (populated by the puller)
+```
+
+## Running `tj`
+
+After `pip install -e .`, the `tj` CLI is on PATH:
+
+```bash
+tj extract <session.jsonl>                     # observed-schema JSON to stdout
+tj validate <session.jsonl>                    # exit 0 on clean; exit 1 on drift
+tj validate <session.jsonl> --spec custom.json # alternate spec
+```
+
+Without install, run via `PYTHONPATH=src python3 -m coo_transcripts_analysis.tj.cli ...`.
 
 ## Running the puller
 
@@ -22,29 +58,44 @@ Side project for fetching and analyzing Claude Code session transcripts from rem
 Behavior to rely on:
 - **Idempotent**: skips any `<id>.jsonl` already present with non-zero size. Re-pull by deleting the file.
 - **Atomic per session**: download + decrypt happen in a tempdir, then `os.replace` onto the final path — an interrupted run never leaves half-written files in `transcripts/`.
-- **Self-bootstrapping deps**: `uv` shebang pins `boto3`; you don't `pip install`.
+- **Self-bootstrapping deps**: `uv` shebang pins `boto3`; you don't `pip install` separately.
 
 ### Prerequisites on the local machine
 
-- `uv` on PATH (runs the script).
-- `op` (1Password CLI) signed in (`eval $(op signin)`) or `OP_SERVICE_ACCOUNT_TOKEN` set. The script reads five `op://COO/...` refs for R2 creds + the age identity — see the docstring for the exact paths.
+- `uv` on PATH (runs the puller script).
+- `op` (1Password CLI) signed in (`eval $(op signin)`) or `OP_SERVICE_ACCOUNT_TOKEN` set. The script reads five `op://COO/...` refs for R2 creds + the age identity — see its docstring for the exact paths.
 - `age` binary on PATH.
 
-The `_preflight` check enforces `op` and `age`; missing tools fail fast with a clear message.
+## Tests
 
-## Transcript format
+```bash
+pip install -e ".[test]"
+pytest                                         # unit + integration
+pytest -m "not integration"                   # unit only
+COO_TRANSCRIPTS_DIR=/path/to/cache pytest tests/integration -v
+```
 
-Each line is one JSON event from a Claude Code session. Top-level `type` discriminates (`attachment`, `user`, `assistant`, tool results, etc.). Useful fields when slicing: `sessionId`, `timestamp`, `cwd`, `gitBranch`, `parentUuid`/`uuid` (threading), `isSidechain` (sub-agent calls), `version` (CC version), and hook payloads under `attachment`. High-entropy strings are pre-redacted as `[REDACTED:high-entropy]` — assume any remaining content is intentional.
+The integration test (the acceptance falsifier per [vade-app/vade-agent-logs#381](https://github.com/vade-app/vade-agent-logs/issues/381)) skips cleanly if `transcripts/` is empty. CI (see `.github/workflows/tj-tests.yml`) runs the unit suite across Python 3.10–3.13.
 
-## Git hygiene
+## When extending
 
-The repo uses a tracked pre-commit hook at [hooks/pre-commit](hooks/pre-commit) that hard-blocks any staged path under `transcripts/` or ending in `.jsonl`. It's belt-and-suspenders against the gitignore — transcripts are sensitive and history-scrubbing a pushed repo is painful. Enable on a fresh clone with:
+- **Spec changes** follow `spec/transcript-schema-spec.md` §11 (versioning convention). Bump `schema_version` in both the markdown and the JSON; explain which rule fired (field-add / field-rename / new-type).
+- **Library changes** keep the public API minimal — `walk`, `extract`, `validate`, `load_spec`. New shapes either fold into `extract`'s output or get their own subcommand on `cli`.
+- **The puller** (`bin/transcript-pull-local.py`) tracks the upstream copy in `vade-app/vade-runtime`. Don't drift; if changes are needed, file an issue upstream first.
+- **Treat `transcripts/` as a read-only cache.** Anything derived (parsed indexes, per-session summaries, embeddings) belongs in a separate directory so `rm -rf transcripts/ && re-pull` stays cheap.
+
+## Transcripts are sensitive
+
+The pulled `<session>.jsonl` files are the redacted plaintext that lives in R2 — i.e. the rawest thing the storage tier holds. High-entropy strings are pre-redacted as `[REDACTED:high-entropy]`; assume any remaining content is intentional. Do not paste into external tools.
+
+The repo uses a tracked pre-commit hook at [`hooks/pre-commit`](hooks/pre-commit) that hard-blocks any staged path under `transcripts/` or ending in `.jsonl` (except under `tests/fixtures/`, which are synthetic). Enable on a fresh clone with:
 
 ```bash
 git config core.hooksPath hooks
 ```
 
-## When extending
+## Cross-references
 
-- Analysis code should be additive — new scripts/notebooks alongside `bin/transcript-pull-local.py`, not edits to it (it tracks an upstream).
-- Treat `transcripts/` as a read-only cache. Anything derived (parsed indexes, per-session summaries, embeddings) belongs in a separate directory so a `rm -rf transcripts/ && re-pull` stays cheap.
+- [vade-app/vade-agent-logs#381](https://github.com/vade-app/vade-agent-logs/issues/381) — implementation issue.
+- [vade-coo-memory#864](https://github.com/vade-app/vade-coo-memory/pull/864) — merged spec proposal.
+- [anthropics/claude-code#53516](https://github.com/anthropics/claude-code/issues/53516) — community schema-stability ask; engagement point post-merge.
