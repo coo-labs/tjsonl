@@ -1,8 +1,8 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://github.com/vade-app/coo-transcripts-analysis/spec/transcript-schema.json",
+  "$id": "https://github.com/vade-app/tjsonl/spec/transcript-schema.json",
   "title": "Claude Code transcript JSONL line schema",
-  "description": "Schema for a single line of a Claude Code transcript jsonl file. Lifted from coo-transcripts-analysis/spec/transcript-schema-spec.md (v0.1.0). Discriminator is top-level `type`. Per-tool `tool_use.input` shapes are an extension point and are not validated structurally by this document.",
+  "description": "Schema for a single line of a Claude Code transcript jsonl file. Lifted from tjsonl/spec/transcript-schema-spec.md (v0.1.0). Discriminator is top-level `type`. Per-tool `tool_use.input` shapes are an extension point and are not validated structurally by this document.",
   "schema_version": "0.1.0",
   "$defs": {
     "isoTimestamp": {

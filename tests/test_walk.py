@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from coo_transcripts_analysis.tj import walk, Event, ParseError
+from tjsonl import walk, Event, ParseError
 
 FIXTURES = Path(__file__).parent / "fixtures"
 

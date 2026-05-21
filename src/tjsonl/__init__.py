@@ -1,4 +1,4 @@
-"""tj — Claude Code transcript jsonl schema extractor + validator.
+"""tjsonl — Claude Code transcript jsonl schema extractor + validator.
 
 Public API:
     walk(jsonl_path)        -> Iterator[Event]
@@ -8,6 +8,8 @@ Public API:
 
 CLI entry point: `tj` (see cli.py).
 """
+
+__version__ = "0.1.0"
 
 from .walk import Event, ParseError, walk
 from .extract import extract
@@ -23,4 +25,5 @@ __all__ = [
     "ValidationReport",
     "load_spec",
     "SPEC_VERSION",
+    "__version__",
 ]
