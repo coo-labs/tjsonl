@@ -1,0 +1,3 @@
+{"type":"user","sessionId":"00000000-0000-0000-0000-000000000004","uuid":"u1","parentUuid":null,"timestamp":"2026-05-21T00:00:00.000Z","cwd":"/home/user","entrypoint":"cli","gitBranch":"main","isSidechain":false,"userType":"external","version":"2.1.140","message":{"role":"user","content":"ok"}}
+{"type":"user","this is not valid json
+{"type":"queue-operation","sessionId":"00000000-0000-0000-0000-000000000004","operation":"enqueue"}
