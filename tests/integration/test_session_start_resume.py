@@ -34,7 +34,7 @@ from pathlib import Path
 
 import pytest
 
-from coo_transcripts_analysis.tj import walk, Event
+from tjsonl import walk, Event
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_DIR = REPO_ROOT / "transcripts"

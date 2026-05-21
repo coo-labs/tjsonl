@@ -3,7 +3,7 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "coo-transcripts-analysis"
+name = "tjsonl"
 version = "0.1.0"
 description = "Claude Code transcript jsonl schema extractor + validator (tj)"
 readme = "README.md"
@@ -37,17 +37,17 @@ dependencies = []
 test = ["pytest>=7,<9"]
 
 [project.scripts]
-tj = "coo_transcripts_analysis.tj.cli:main"
+tj = "tjsonl.cli:main"
 
 [project.urls]
-Homepage = "https://github.com/vade-app/coo-transcripts-analysis"
+Homepage = "https://github.com/vade-app/tjsonl"
 Issues = "https://github.com/vade-app/vade-agent-logs/issues/381"
-Spec = "https://github.com/vade-app/coo-transcripts-analysis/blob/main/spec/transcript-schema-spec.md"
+Spec = "https://github.com/vade-app/tjsonl/blob/main/spec/transcript-schema-spec.md"
 
 [tool.hatch.build.targets.wheel]
-packages = ["src/coo_transcripts_analysis"]
+packages = ["src/tjsonl"]
 # The JSONSchema spec ships inside the package at
-# coo_transcripts_analysis/tj/_bundled/transcript-schema.json so it is
+# tjsonl/tj/_bundled/transcript-schema.json so it is
 # loadable via importlib.resources in any install shape (editable, wheel,
 # sdist, zipapp). The repo-root spec/transcript-schema.json is a symlink
 # to the same file so external readers find it at the canonical docs path.

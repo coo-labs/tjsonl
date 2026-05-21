@@ -61,7 +61,9 @@ All other fields are per-type required or optional.
 | `file-history-snapshot` | [anthropics/claude-code#53516](https://github.com/anthropics/claude-code/issues/53516) + simonw spec | Checkpoint file backup |
 | `permission-mode` | [anthropics/claude-code#53516](https://github.com/anthropics/claude-code/issues/53516) | Permission mode change |
 
-Validators MUST recognize all eleven as known top-level types in v0.1. The four sourced only from issue #53516 carry minimal field detail; the v0 tool's first runs against broader samples fill those in.
+Validators MUST recognize all eleven as known top-level types in v0.1. The four sourced only from issue #53516 carry minimal field detail; future observation passes against broader samples fill those in.
+
+**Contributor on-ramp.** If your parser sees a `type` value not in this enum, that's a spec gap. Open an issue with one or two example lines (redact sensitive content) or PR the type directly per [CONTRIBUTING.md](../CONTRIBUTING.md#c-adding-a-new-top-level-event-type). The four issue-#53516-only types are documented at envelope level only — PRs that fill in their per-field tables from a real observation are exactly what the spec needs.
 
 ---
 
@@ -259,6 +261,8 @@ Twenty-one values observed across the 174-session v0 sample:
 | `todo_reminder` | Opaque `object`. To be filled in v1. |
 | `ultrathink_effort` | `{}` (empty payload) — marker that an "ultrathink" effort tier was selected. |
 
+**Contributor on-ramp.** Eight values above are still opaque. If you've seen a real instance of `command_permissions`, `deferred_tools_delta`, `dynamic_skill`, `edited_text_file`, `nested_memory`, `queued_command`, `skill_listing`, or `todo_reminder`, please PR the payload table — the `hook_success` pattern below (§6.1) is the template. See [CONTRIBUTING.md §A](../CONTRIBUTING.md#a-adding-a-new-attachmenttype-payload).
+
 ### 6.1 `attachment.hook_success` payload
 
 Observed shape (all 10 fields present on every observed instance — including all 8 SessionStart hooks in the v0 reference session):
@@ -332,6 +336,8 @@ The spec treats `tool_use.input` as an **extension point keyed on `tool_use.name
 
 The validator reports `unknown_tool_names` when it encounters a `tool_use.name` outside the registry and outside the MCP pattern.
 
+**Contributor on-ramp.** When Claude Code ships a new built-in tool, add it to `BUILTIN_TOOL_NAMES` in [`src/tjsonl/_spec.py`](../src/tjsonl/_spec.py) and to the table above. See [CONTRIBUTING.md §B](../CONTRIBUTING.md#b-adding-a-new-built-in-tool_usename).
+
 ---
 
 ## 10. Validation report shape
@@ -363,7 +369,18 @@ The validator exits 0 on a clean report; exits 1 if any of the above buckets is 
   - New `attachment.type` value → minor bump
   - New `tool_use.name` in the built-in registry → minor bump (MCP names don't count; they're per-server)
 
-The drift-diff tool (v1) reports which rule was hit and proposes the version bump. A human merges the spec PR that records it.
+The drift-diff tool (planned for v0.2) reports which rule was hit and proposes the version bump. A human merges the spec PR that records it.
+
+### Deprecation policy (the promise to consumers)
+
+Once a field name or enum value lands in the spec at minor `0.N.M`, we will not remove or rename it in any subsequent minor or patch version of `0.N.*`. Major-version bumps (`0.N` → `0.(N+1)`, or eventually `0.X` → `1.0`) follow a one-minor-version deprecation window:
+
+- The old shape stays documented as `deprecated` for at least one minor release.
+- The new shape is supported in parallel for that window.
+- The validator emits a `deprecated_fields` bucket (post-v0.2) so consumers can plan migration.
+- The `CHANGELOG.md` is the source of truth for what changed and when.
+
+Peer parsers can pin to a minor version with the expectation that no required field disappears, no enum value evaporates, and no envelope key is silently renamed within that line.
 
 ---
 
