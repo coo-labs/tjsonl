@@ -108,6 +108,16 @@ def validate(jsonl_path: str | Path, spec_path: str | Path | None = None) -> Val
         data = event.data
         ev_type = data.get("type")
         if not isinstance(ev_type, str):
+            # `type` is required on every line per spec §2. A missing or
+            # non-string `type` lands in missing_required_fields, not the
+            # silent-drop bucket.
+            report.missing_required_fields.append(
+                MissingField(
+                    line_number=event.line_number,
+                    event_type="<unknown>",
+                    field="type",
+                )
+            )
             continue
 
         if ev_type not in known_types:
@@ -153,7 +163,16 @@ def validate(jsonl_path: str | Path, spec_path: str | Path | None = None) -> Val
                     if block.get("type") != "tool_use":
                         continue
                     name = block.get("name")
-                    if isinstance(name, str) and not _is_known_tool_name(name):
+                    if not isinstance(name, str):
+                        # A non-string tool_use.name is invalid per spec §7.1
+                        # (`name: string` is required). Surface as an unknown
+                        # tool name rather than silently dropping it.
+                        marker = f"<non-string:{type(name).__name__}>"
+                        if marker not in seen_unknown_tools:
+                            seen_unknown_tools.add(marker)
+                            report.unknown_tool_names.append(marker)
+                        continue
+                    if not _is_known_tool_name(name):
                         if name not in seen_unknown_tools:
                             seen_unknown_tools.add(name)
                             report.unknown_tool_names.append(name)

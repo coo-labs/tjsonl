@@ -46,10 +46,11 @@ Spec = "https://github.com/vade-app/coo-transcripts-analysis/blob/main/spec/tran
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/coo_transcripts_analysis"]
-include = ["spec/transcript-schema.json"]
-
-[tool.hatch.build.targets.wheel.shared-data]
-"spec/transcript-schema.json" = "share/coo_transcripts_analysis/spec/transcript-schema.json"
+# The JSONSchema spec ships inside the package at
+# coo_transcripts_analysis/tj/_bundled/transcript-schema.json so it is
+# loadable via importlib.resources in any install shape (editable, wheel,
+# sdist, zipapp). The repo-root spec/transcript-schema.json is a symlink
+# to the same file so external readers find it at the canonical docs path.
 
 [tool.hatch.build.targets.sdist]
 include = [

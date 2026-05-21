@@ -111,7 +111,12 @@ The integration test under [`tests/integration/test_session_start_resume.py`](te
 pytest tests/integration -v
 ```
 
-Empirical result on the v0 sample (174 sessions): 74 sessions showed >1 distinct SessionStart `toolUseID`. The hook **does** fire on resume, reinjecting identity context.
+Empirical result on the v0 sample (174 on-disk files, 195 distinct sessionIds):
+
+- **Per sessionId** (the canonical unit per spec §6.1; one sessionId may span multiple on-disk files via sub-agent sidechains or export merges): 5 of 195 sessionIds with at least one SessionStart hook showed >1 distinct `toolUseID`.
+- **Per file** (the fleet-ops grouping): 74 of 168 files with at least one SessionStart hook showed >1 distinct `toolUseID`.
+
+Both measurements agree that the hook **does** fire on resume; they disagree on the rate because the per-file count conflates multiple sessionIds living in the same `.jsonl`. The integration test asserts on the per-sessionId measurement (matching the spec's per-session-lifetime semantics) and emits both numbers as diagnostic output.
 
 The test is marked `@pytest.mark.integration` and skips cleanly when `transcripts/` is empty (CI without the R2 cache).
 

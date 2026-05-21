@@ -41,3 +41,26 @@ def test_validate_malformed_lines_counted_as_unparseable():
     # one parsed line is a user without `message` content list — but the synthetic
     # fixture passes a string content, which the spec allows on user via oneOf.
     assert report.exit_code == 1  # unparseable counts as not-clean
+
+
+def test_validate_missing_or_non_string_type_is_reported():
+    """`type` is required on every line per spec §2; a missing or non-string
+    value must surface as a missing-required-field row, not silently pass."""
+    report = validate(FIXTURES / "missing_type.jsonl")
+    assert report.clean is False
+    assert report.exit_code == 1
+    type_misses = [
+        m for m in report.missing_required_fields if m.field == "type"
+    ]
+    assert len(type_misses) == 2
+    assert {m.line_number for m in type_misses} == {1, 2}
+    assert all(m.event_type == "<unknown>" for m in type_misses)
+
+
+def test_validate_reports_missing_required_envelope_fields():
+    """An assistant line that omits common-rich envelope fields surfaces them
+    as missing-required-field rows (line numbers included)."""
+    report = validate(FIXTURES / "missing_required.jsonl")
+    assert report.clean is False
+    missing_names = {m.field for m in report.missing_required_fields}
+    assert "parentUuid" in missing_names

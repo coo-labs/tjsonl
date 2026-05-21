@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import json
 from functools import lru_cache
+from importlib import resources
 from pathlib import Path
 
 SPEC_VERSION = "0.1.0"
@@ -42,17 +43,21 @@ BUILTIN_TOOL_NAMES: frozenset[str] = frozenset(
 )
 
 
-def _bundled_spec_path() -> Path:
-    # spec/transcript-schema.json lives at the repo root, two levels up
-    # from this file (src/coo_transcripts_analysis/tj/_spec.py).
-    return Path(__file__).resolve().parents[3] / "spec" / "transcript-schema.json"
-
-
 @lru_cache(maxsize=8)
 def load_spec(path: str | Path | None = None) -> dict:
-    """Load the spec JSON. Defaults to the bundled spec/transcript-schema.json."""
-    target = Path(path) if path else _bundled_spec_path()
-    with target.open("r", encoding="utf-8") as fh:
+    """Load the spec JSON.
+
+    Defaults to the package-bundled `_bundled/transcript-schema.json` via
+    `importlib.resources`, so it works under any install shape (editable,
+    wheel, sdist, zipapp). Pass an explicit path to validate against an
+    alternate spec.
+    """
+    if path:
+        with Path(path).open("r", encoding="utf-8") as fh:
+            return json.load(fh)
+    with resources.files(__package__).joinpath("_bundled/transcript-schema.json").open(
+        "r", encoding="utf-8"
+    ) as fh:
         return json.load(fh)
 
 
