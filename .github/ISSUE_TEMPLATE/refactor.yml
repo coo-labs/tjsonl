@@ -13,6 +13,7 @@ body:
         slightly — use **Feature** or **Bug** instead.
 
         Native-field widgets at the bottom (Priority, Effort) are
+        bridged to the issue's native fields by a workflow on creation.
         Refactor is not pinned to Readiness (it's typically picked up
         opportunistically).
 
@@ -49,7 +50,7 @@ body:
     id: priority
     attributes:
       label: Priority
-      description: P0 (urgent) → P3 (low).
+      description: P0 (urgent) → P3 (low). Bridged to the native Priority field.
       options:
         - P2
         - P0
@@ -63,7 +64,7 @@ body:
     id: effort
     attributes:
       label: Effort
-      description: Estimated effort. XS → XL.
+      description: Estimated effort. XS → XL. Bridged to the native Effort field.
       options:
         - M
         - XS
