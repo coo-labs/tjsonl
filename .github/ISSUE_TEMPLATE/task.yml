@@ -12,7 +12,8 @@ body:
         parent issues use the **Epic** template instead. For defects use
         **Bug**; for new user-facing capabilities use **Feature**.
 
-        Set Priority and Readiness in the right sidebar after creation.
+        Native-field widgets at the bottom (Priority, Readiness) are
+        bridged to the issue's native fields by a workflow on creation.
         See [`coo/operations/issue-fields-and-types.md`](https://github.com/vade-app/vade-coo-memory/blob/main/coo/operations/issue-fields-and-types.md).
 
   - type: textarea
@@ -49,7 +50,7 @@ body:
     id: priority
     attributes:
       label: Priority
-      description: P0 (urgent) → P3 (low).
+      description: P0 (urgent) → P3 (low). Bridged to the native Priority field.
       options:
         - P2
         - P0
@@ -63,7 +64,7 @@ body:
     id: readiness
     attributes:
       label: Readiness
-      description: Pickup-readiness.
+      description: Pickup-readiness. Bridged to the native Readiness field.
       options:
         - Ready
         - Needs design

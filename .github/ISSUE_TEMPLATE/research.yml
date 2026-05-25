@@ -13,7 +13,7 @@ body:
         code-spikes). The deliverable is **understanding made durable**,
         not a feature ship.
 
-        Set Priority, Readiness, Effort, Output kind, and Research question in the right sidebar after creation.
+        Native-field widgets at the bottom are bridged to the issue's
         native fields by a workflow on creation. The custom fields
         `Research question` and `Output kind` are pinned to Research.
 
@@ -21,7 +21,7 @@ body:
     id: research-question
     attributes:
       label: Research question
-      description: The specific question to investigate. One sentence
+      description: The specific question to investigate. One sentence; bridged to the native `Research question` field.
     validations:
       required: true
 
@@ -66,7 +66,7 @@ body:
     id: priority
     attributes:
       label: Priority
-      description: P0 (urgent) → P3 (low).
+      description: P0 (urgent) → P3 (low). Bridged to the native Priority field.
       options:
         - P2
         - P0
@@ -80,7 +80,7 @@ body:
     id: readiness
     attributes:
       label: Readiness
-      description: Pickup-readiness.
+      description: Pickup-readiness. Bridged to the native Readiness field.
       options:
         - Ready
         - Needs design
@@ -93,7 +93,7 @@ body:
     id: effort
     attributes:
       label: Effort
-      description: Estimated effort. XS → XL.
+      description: Estimated effort. XS → XL. Bridged to the native Effort field.
       options:
         - M
         - XS
@@ -108,7 +108,7 @@ body:
     id: output-kind
     attributes:
       label: Output kind
-      description: Type of artifact this research will produce.
+      description: Type of artifact this research will produce. Bridged to the native Output kind field.
       options:
         - memo
         - foundation-essay

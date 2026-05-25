@@ -11,7 +11,8 @@ body:
         Existing behavior diverges from what's intended. Use this template
         for regressions, broken features, and unexpected outputs.
 
-        Set Priority and Readiness in the right sidebar after creation.
+        Native-field widgets at the bottom (Priority, Readiness) are
+        bridged to the issue's native fields by a workflow on creation.
 
   - type: textarea
     id: reproduction
@@ -51,7 +52,7 @@ body:
     id: priority
     attributes:
       label: Priority
-      description: P0 (urgent) → P3 (low).
+      description: P0 (urgent) → P3 (low). Bridged to the native Priority field.
       options:
         - P2
         - P0
@@ -65,7 +66,7 @@ body:
     id: readiness
     attributes:
       label: Readiness
-      description: Pickup-readiness.
+      description: Pickup-readiness. Bridged to the native Readiness field.
       options:
         - Ready
         - Needs design
