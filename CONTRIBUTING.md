@@ -22,7 +22,7 @@ The format is the same as `hook_success` (§6.1):
 1. Add a sub-section under §6 named `### 6.N attachment.<type> payload`.
 2. List the observed fields in a table with columns `Field | Type | Notes`.
 3. Cite the empirical basis: "observed in N/N sessions in the v0 sample" or "observed in `<your-corpus-link>`".
-4. Update [`spec/transcript-schema.json`](spec/transcript-schema.json) — add an `if/then` overlay on the `attachment` variant matching the `hook_success` pattern, OR push the payload structure inline.
+4. Update [`src/tjsonl/_bundled/transcript-schema.json`](src/tjsonl/_bundled/transcript-schema.json) — add an `if/then` overlay on the `attachment` variant matching the `hook_success` pattern, OR push the payload structure inline.
 5. Bump the spec version per §11 (new payload table → minor bump).
 
 ### B. Adding a new built-in `tool_use.name`
@@ -40,7 +40,7 @@ MCP tools (`mcp__<server>__<action>`) are valid by pattern; their input shapes a
 
 If your parser sees a `type` value not in [spec §3](spec/transcript-schema-spec.md#3-top-level-types-closed-enum-v01):
 
-1. Add it as a `oneOf` variant in [`spec/transcript-schema.json`](spec/transcript-schema.json), with at minimum `type` + `sessionId` required and any per-type fields you can document.
+1. Add it as a `oneOf` variant in [`src/tjsonl/_bundled/transcript-schema.json`](src/tjsonl/_bundled/transcript-schema.json), with at minimum `type` + `sessionId` required and any per-type fields you can document.
 2. Add a row to the §3 table with an empirical-evidence citation.
 3. Add a `### 5.N <type>` sub-section in §5 with the per-type field table.
 4. Bump the spec version per §11 (new top-level type → minor bump).
@@ -71,7 +71,7 @@ COO_TRANSCRIPTS_DIR=~/.claude/projects pytest tests/integration -v
 ## PR checklist
 
 - [ ] Spec markdown updated (if user-visible behavior changed).
-- [ ] JSONSchema (`spec/transcript-schema.json`) updated to mirror the markdown.
+- [ ] JSONSchema (`src/tjsonl/_bundled/transcript-schema.json`) updated to mirror the markdown.
 - [ ] `_spec.py` constants reflect the change (if applicable — most spec changes are picked up automatically via JSON-driven constants).
 - [ ] Tests added or updated.
 - [ ] Spec version bumped per §11 (the PR can name which rule triggered).
