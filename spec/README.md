@@ -8,7 +8,7 @@ This directory holds the human-readable schema spec for the Claude Code transcri
 
 ## Machine-readable JSONSchema
 
-The JSONSchema (Draft 2020-12) rendering of the spec lives canonically inside the Python package at [`src/tjsonl/_bundled/transcript-schema.json`](../src/tjsonl/_bundled/transcript-schema.json) so it loads via `importlib.resources` in any install shape (editable, wheel, sdist, zipapp).
+The JSONSchema (Draft 2020-12) rendering of the spec is bundled in the `tjsonl` package so it loads via `importlib.resources` in any install shape (editable, wheel, sdist, zipapp). After `pip install tjsonl` the package path is `tjsonl/_bundled/transcript-schema.json`; in this repository the file is at [`src/tjsonl/_bundled/transcript-schema.json`](../src/tjsonl/_bundled/transcript-schema.json).
 
 For downstream consumers that want the raw JSONSchema without installing the package, fetch it directly from GitHub:
 

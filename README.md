@@ -8,7 +8,7 @@ The goal is to be the **de-facto schema reference the community shares**, so pee
 
 Two surfaces:
 
-1. **`spec/`** — the markdown spec. Source of truth: [`spec/transcript-schema-spec.md`](spec/transcript-schema-spec.md). The JSONSchema rendering lives canonically inside the package at [`src/tjsonl/_bundled/transcript-schema.json`](src/tjsonl/_bundled/transcript-schema.json).
+1. **`spec/`** — the markdown spec. Source of truth: [`spec/transcript-schema-spec.md`](spec/transcript-schema-spec.md). The JSONSchema rendering is bundled in the `tjsonl` package (installed path `tjsonl/_bundled/transcript-schema.json`; in this repo, [`src/tjsonl/_bundled/transcript-schema.json`](src/tjsonl/_bundled/transcript-schema.json)).
 2. **`tj`** — a Python library + CLI that extracts the observed schema from a transcript jsonl and validates it against the spec. Zero runtime dependencies.
 
 ## You should care if…
@@ -121,7 +121,7 @@ The library is **zero-dependency** on the runtime path. `pytest` is the only ext
 
 ## Spec
 
-[`spec/transcript-schema-spec.md`](spec/transcript-schema-spec.md) is the source-of-truth, observation-grounded spec. The JSONSchema (Draft 2020-12) rendering of the same lives canonically inside the Python package at [`src/tjsonl/_bundled/transcript-schema.json`](src/tjsonl/_bundled/transcript-schema.json) — suitable for downstream consumers who want full schema-validator integration. Fetch it raw at <https://raw.githubusercontent.com/vade-app/tjsonl/main/src/tjsonl/_bundled/transcript-schema.json>, or in Python via `tjsonl.load_spec()`.
+[`spec/transcript-schema-spec.md`](spec/transcript-schema-spec.md) is the source-of-truth, observation-grounded spec. The JSONSchema (Draft 2020-12) rendering of the same is bundled in the `tjsonl` package — suitable for downstream consumers who want full schema-validator integration. After install the path is `tjsonl/_bundled/transcript-schema.json` (in this repo, [`src/tjsonl/_bundled/transcript-schema.json`](src/tjsonl/_bundled/transcript-schema.json)). Fetch it raw at <https://raw.githubusercontent.com/vade-app/tjsonl/main/src/tjsonl/_bundled/transcript-schema.json>, or in Python via `tjsonl.load_spec()`.
 
 The spec covers:
 

@@ -6,7 +6,7 @@ This file is configuration for [Claude Code](https://claude.ai/code) agents work
 
 `tjsonl` is a community-maintained schema reference for the Claude Code transcript JSONL format. Two surfaces:
 
-1. **`spec/`** — the v0.1 schema spec ([`transcript-schema-spec.md`](spec/transcript-schema-spec.md)). The machine-readable JSONSchema lives canonically inside the package at [`src/tjsonl/_bundled/transcript-schema.json`](src/tjsonl/_bundled/transcript-schema.json); `spec/README.md` cross-references it.
+1. **`spec/`** — the v0.1 schema spec ([`transcript-schema-spec.md`](spec/transcript-schema-spec.md)). The machine-readable JSONSchema is bundled in the `tjsonl` package (installed path `tjsonl/_bundled/transcript-schema.json`; in this repo, [`src/tjsonl/_bundled/transcript-schema.json`](src/tjsonl/_bundled/transcript-schema.json)); `spec/README.md` cross-references it.
 2. **`tj`** — a zero-dependency Python library + CLI under [`src/tjsonl/`](src/tjsonl/) that extracts, validates, and walks transcript jsonls.
 
 Implementation history: [vade-app/vade-agent-logs#381](https://github.com/vade-app/vade-agent-logs/issues/381); the spec proposal it lifts from is in `vade-coo-memory/coo/instruments/_runs/2026-05-21_transcript-schema-extractor.md`.
