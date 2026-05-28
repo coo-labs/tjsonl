@@ -15,9 +15,11 @@ deliverables list specifies:
 The validator is intentionally structural — not a full JSONSchema engine —
 so the package stays zero-dependency. Coverage matches the spec's
 described constraints (top-level enum, common-rich requireds, attachment
-enum, tool-name registry, MCP-name pattern). The bundled JSONSchema in
-spec/transcript-schema.json is the machine-readable reference for
-downstream consumers that want full Draft 2020-12 validation.
+enum, tool-name registry, MCP-name pattern). The bundled JSONSchema
+(installed at tjsonl/_bundled/transcript-schema.json, or
+src/tjsonl/_bundled/transcript-schema.json in this repo) is the
+machine-readable reference for downstream consumers that want full
+Draft 2020-12 validation.
 """
 
 from __future__ import annotations

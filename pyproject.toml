@@ -47,10 +47,11 @@ Spec = "https://github.com/vade-app/tjsonl/blob/main/spec/transcript-schema-spec
 [tool.hatch.build.targets.wheel]
 packages = ["src/tjsonl"]
 # The JSONSchema spec ships inside the package at
-# tjsonl/tj/_bundled/transcript-schema.json so it is
-# loadable via importlib.resources in any install shape (editable, wheel,
-# sdist, zipapp). The repo-root spec/transcript-schema.json is a symlink
-# to the same file so external readers find it at the canonical docs path.
+# src/tjsonl/_bundled/transcript-schema.json so it is loadable via
+# importlib.resources in any install shape (editable, wheel, sdist,
+# zipapp). The repo-level `spec/` directory holds the human-readable
+# markdown spec plus a README pointing external readers at the
+# bundled JSONSchema via GitHub URL.
 
 [tool.hatch.build.targets.sdist]
 include = [

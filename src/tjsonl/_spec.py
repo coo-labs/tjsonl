@@ -1,4 +1,4 @@
-"""Spec loader — exposes the bundled spec/transcript-schema.json plus
+"""Spec loader — exposes the bundled _bundled/transcript-schema.json plus
 derived constants the validator and extractor share.
 
 The JSON spec is the single source of truth. This module surfaces it as
