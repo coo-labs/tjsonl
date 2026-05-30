@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://github.com/vade-app/tjsonl/spec/transcript-schema.json",
+  "$id": "https://github.com/coo-labs/tjsonl/spec/transcript-schema.json",
   "title": "Claude Code transcript JSONL line schema",
   "description": "Schema for a single line of a Claude Code transcript jsonl file. Lifted from tjsonl/spec/transcript-schema-spec.md (v0.1.0). Discriminator is top-level `type`. Per-tool `tool_use.input` shapes are an extension point and are not validated structurally by this document.",
   "schema_version": "0.1.0",
@@ -118,7 +118,7 @@
       ]
     },
     "hookSuccessPayload": {
-      "description": "attachment.hook_success payload — fully specified in v0.1 per vade-app/vade-agent-logs#381.",
+      "description": "attachment.hook_success payload — fully specified in v0.1 per coo-labs/coo-logs#381.",
       "type": "object",
       "required": [
         "type",

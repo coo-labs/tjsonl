@@ -53,7 +53,7 @@ The four types currently sourced only from [anthropics/claude-code#53516](https:
 ## Development workflow
 
 ```bash
-git clone https://github.com/vade-app/tjsonl
+git clone https://github.com/coo-labs/tjsonl
 cd tjsonl
 python3 -m venv .venv && source .venv/bin/activate
 pip install -e ".[test]"
