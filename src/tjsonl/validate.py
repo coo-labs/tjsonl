@@ -2,7 +2,7 @@
 
 `validate(jsonl_path)` walks a jsonl and checks each line against the
 v0.1 spec. Returns a ValidationReport whose keys are exactly the set
-[vade-app/vade-agent-logs#381](https://github.com/vade-app/vade-agent-logs/issues/381)'s
+[coo-labs/coo-logs#381](https://github.com/coo-labs/coo-logs/issues/381)'s
 deliverables list specifies:
 
     unknown_event_types

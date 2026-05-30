@@ -121,7 +121,7 @@ The library is **zero-dependency** on the runtime path. `pytest` is the only ext
 
 ## Spec
 
-[`spec/transcript-schema-spec.md`](spec/transcript-schema-spec.md) is the source-of-truth, observation-grounded spec. The JSONSchema (Draft 2020-12) rendering of the same is bundled in the `tjsonl` package — suitable for downstream consumers who want full schema-validator integration. After install the path is `tjsonl/_bundled/transcript-schema.json` (in this repo, [`src/tjsonl/_bundled/transcript-schema.json`](src/tjsonl/_bundled/transcript-schema.json)). Fetch it raw at <https://raw.githubusercontent.com/vade-app/tjsonl/main/src/tjsonl/_bundled/transcript-schema.json>, or in Python via `tjsonl.load_spec()`.
+[`spec/transcript-schema-spec.md`](spec/transcript-schema-spec.md) is the source-of-truth, observation-grounded spec. The JSONSchema (Draft 2020-12) rendering of the same is bundled in the `tjsonl` package — suitable for downstream consumers who want full schema-validator integration. After install the path is `tjsonl/_bundled/transcript-schema.json` (in this repo, [`src/tjsonl/_bundled/transcript-schema.json`](src/tjsonl/_bundled/transcript-schema.json)). Fetch it raw at <https://raw.githubusercontent.com/coo-labs/tjsonl/main/src/tjsonl/_bundled/transcript-schema.json>, or in Python via `tjsonl.load_spec()`.
 
 The spec covers:
 
@@ -185,7 +185,7 @@ tests/
 
 ## For VADE operators
 
-The R2 ciphertext puller (`transcript-pull-local.py`) lives canonically at [`vade-app/vade-runtime/scripts/`](https://github.com/vade-app/vade-runtime) (private). Populate any directory with `*.jsonl` files using that, then point `tj` at it via `COO_TRANSCRIPTS_DIR=<path> pytest tests/integration` or just `tj validate <path.jsonl>`.
+The R2 ciphertext puller (`transcript-pull-local.py`) lives canonically at [`coo-labs/coo-harness/scripts/`](https://github.com/coo-labs/coo-harness) (private). Populate any directory with `*.jsonl` files using that, then point `tj` at it via `COO_TRANSCRIPTS_DIR=<path> pytest tests/integration` or just `tj validate <path.jsonl>`.
 
 ## Cross-references
 

@@ -2,7 +2,7 @@
 
 **Spec version:** `0.1.0`  
 **Status:** draft, observation-grounded  
-**Source:** [`vade-coo-memory/coo/instruments/_runs/2026-05-21_transcript-schema-extractor.md`](https://github.com/vade-app/vade-coo-memory/blob/main/coo/instruments/_runs/2026-05-21_transcript-schema-extractor.md) §"Draft hierarchical schema spec — v0.1", lifted into this repo per [vade-app/vade-agent-logs#381](https://github.com/vade-app/vade-agent-logs/issues/381).
+**Source:** [`coo-memory/coo/instruments/_runs/2026-05-21_transcript-schema-extractor.md`](https://github.com/coo-labs/coo-memory/blob/main/coo/instruments/_runs/2026-05-21_transcript-schema-extractor.md) §"Draft hierarchical schema spec — v0.1", lifted into this repo per [coo-labs/coo-logs#381](https://github.com/coo-labs/coo-logs/issues/381).
 
 This is a community-authored, observation-grounded spec for the on-disk JSONL transcript format Claude Code writes to `~/.claude/projects/<encoded-cwd>/<session-id>.jsonl`. Anthropic does not publish a per-line schema; this spec exists to document the de-facto shape that has converged across community parsers and across the VADE R2 transcript archive.
 
@@ -249,7 +249,7 @@ Twenty-one values observed across the 174-session v0 sample:
 | `hook_additional_context` | `{content, hookEvent, hookName, toolUseID}` — additional context appended by a hook's `hookSpecificOutput.additionalContext`. |
 | `hook_blocking_error` | `{blockingError, hookEvent, hookName, toolUseID}` — hook returned a deny/block decision. |
 | `hook_non_blocking_error` | `{command, durationMs, exitCode, hookEvent, hookName, stderr, stdout, toolUseID}` — hook errored but did not block. |
-| `hook_success` | **Fully specified — see §6.1** (closes the per-payload gap [vade-app/vade-agent-logs#381](https://github.com/vade-app/vade-agent-logs/issues/381) listed as the falsifier blocker). |
+| `hook_success` | **Fully specified — see §6.1** (closes the per-payload gap [coo-labs/coo-logs#381](https://github.com/coo-labs/coo-logs/issues/381) listed as the falsifier blocker). |
 | `hook_system_message` | `{content, hookEvent, hookName, toolUseID}` — system-channel hook message. |
 | `nested_memory` | Opaque `object`. To be filled in v1. |
 | `plan_file_reference` | `{planContent, planFilePath}` — references a plan file from plan-mode. |
@@ -342,7 +342,7 @@ The validator reports `unknown_tool_names` when it encounters a `tool_use.name` 
 
 ## 10. Validation report shape
 
-A validator that walks a jsonl against this spec MUST emit the following report keys (per [vade-app/vade-agent-logs#381](https://github.com/vade-app/vade-agent-logs/issues/381) deliverable list):
+A validator that walks a jsonl against this spec MUST emit the following report keys (per [coo-labs/coo-logs#381](https://github.com/coo-labs/coo-logs/issues/381) deliverable list):
 
 | Key | Description |
 |---|---|
@@ -395,7 +395,7 @@ Peer parsers can pin to a minor version with the expectation that no required fi
 
 ## 13. Read trail
 
-- [vade-app/vade-agent-logs#381](https://github.com/vade-app/vade-agent-logs/issues/381) — implementation issue this spec ships with.
-- [vade-coo-memory#864](https://github.com/vade-app/vade-coo-memory/pull/864) — the merged proposal this spec lifts from.
+- [coo-labs/coo-logs#381](https://github.com/coo-labs/coo-logs/issues/381) — implementation issue this spec ships with.
+- [coo-labs/coo-memory#864](https://github.com/coo-labs/coo-memory/pull/864) — the merged proposal this spec lifts from.
 - [anthropics/claude-code#53516](https://github.com/anthropics/claude-code/issues/53516) — community schema-stability ask; engagement point post-merge.
 - [simonw/claude-code-transcripts DeepWiki "JSONL Format"](https://deepwiki.com/simonw/claude-code-transcripts/5.1-jsonl-format) — clean-room community spec aligned with this one.

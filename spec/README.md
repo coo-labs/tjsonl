@@ -12,7 +12,7 @@ The JSONSchema (Draft 2020-12) rendering of the spec is bundled in the `tjsonl` 
 
 For downstream consumers that want the raw JSONSchema without installing the package, fetch it directly from GitHub:
 
-<https://raw.githubusercontent.com/vade-app/tjsonl/main/src/tjsonl/_bundled/transcript-schema.json>
+<https://raw.githubusercontent.com/coo-labs/tjsonl/main/src/tjsonl/_bundled/transcript-schema.json>
 
 Or, from Python:
 
