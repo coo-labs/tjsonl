@@ -2,7 +2,7 @@
 
 **Spec version:** `0.1.0`  
 **Status:** draft, observation-grounded  
-**Source:** [`coo-memory/coo/instruments/_runs/2026-05-21_transcript-schema-extractor.md`](https://github.com/coo-labs/coo-memory/blob/main/coo/instruments/_runs/2026-05-21_transcript-schema-extractor.md) §"Draft hierarchical schema spec — v0.1", lifted into this repo per [coo-labs/coo-logs#381](https://github.com/coo-labs/coo-logs/issues/381).
+**Source:** [`coo-memory/instruments/_runs/2026-05-21_transcript-schema-extractor.md`](https://github.com/coo-labs/coo-memory/blob/main/instruments/_runs/2026-05-21_transcript-schema-extractor.md) §"Draft hierarchical schema spec — v0.1", lifted into this repo per [coo-labs/coo-logs#381](https://github.com/coo-labs/coo-logs/issues/381).
 
 This is a community-authored, observation-grounded spec for the on-disk JSONL transcript format Claude Code writes to `~/.claude/projects/<encoded-cwd>/<session-id>.jsonl`. Anthropic does not publish a per-line schema; this spec exists to document the de-facto shape that has converged across community parsers and across the VADE R2 transcript archive.
 
