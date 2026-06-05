@@ -9,7 +9,7 @@ This file is configuration for [Claude Code](https://claude.ai/code) agents work
 1. **`spec/`** — the v0.1 schema spec ([`transcript-schema-spec.md`](spec/transcript-schema-spec.md)). The machine-readable JSONSchema is bundled in the `tjsonl` package (installed path `tjsonl/_bundled/transcript-schema.json`; in this repo, [`src/tjsonl/_bundled/transcript-schema.json`](src/tjsonl/_bundled/transcript-schema.json)); `spec/README.md` cross-references it.
 2. **`tj`** — a zero-dependency Python library + CLI under [`src/tjsonl/`](src/tjsonl/) that extracts, validates, and walks transcript jsonls.
 
-Implementation history: [vade-app/vade-agent-logs#381](https://github.com/vade-app/vade-agent-logs/issues/381); the spec proposal it lifts from is in `vade-coo-memory/coo/instruments/_runs/2026-05-21_transcript-schema-extractor.md`.
+Implementation history: [coo-labs/coo-logs#381](https://github.com/coo-labs/coo-logs/issues/381); the spec proposal it lifts from is in `coo-memory/instruments/_runs/2026-05-21_transcript-schema-extractor.md`.
 
 ## Layout
 
@@ -52,7 +52,7 @@ pytest -m "not integration"                   # unit only
 COO_TRANSCRIPTS_DIR=/path/to/cache pytest tests/integration -v
 ```
 
-The integration test (the acceptance falsifier per [vade-app/vade-agent-logs#381](https://github.com/vade-app/vade-agent-logs/issues/381)) skips cleanly if no transcript directory is set. CI (see `.github/workflows/tj-tests.yml`) runs the unit suite across Python 3.10–3.13.
+The integration test (the acceptance falsifier per [coo-labs/coo-logs#381](https://github.com/coo-labs/coo-logs/issues/381)) skips cleanly if no transcript directory is set. CI (see `.github/workflows/tj-tests.yml`) runs the unit suite across Python 3.10–3.13.
 
 ## When extending
 
@@ -62,7 +62,7 @@ The integration test (the acceptance falsifier per [vade-app/vade-agent-logs#381
 
 ## For VADE operators
 
-The R2 ciphertext puller (`transcript-pull-local.py`) lives canonically in `vade-app/vade-runtime/scripts/` (private). It's not part of `tj` — `tj` operates on already-decrypted jsonls regardless of origin. Use `COO_TRANSCRIPTS_DIR=<path>` to point the integration test at any directory of `*.jsonl` files.
+The R2 ciphertext puller (`transcript-pull-local.py`) lives canonically in `coo-labs/coo-harness/scripts/` (private). It's not part of `tj` — `tj` operates on already-decrypted jsonls regardless of origin. Use `COO_TRANSCRIPTS_DIR=<path>` to point the integration test at any directory of `*.jsonl` files.
 
 The repo uses a tracked pre-commit hook at [`hooks/pre-commit`](hooks/pre-commit) that hard-blocks any staged path ending in `.jsonl` (except `tests/fixtures/`, which are synthetic). Contributors don't need to enable it unless they're handling real transcripts in their working tree. Enable with:
 
@@ -72,6 +72,6 @@ git config core.hooksPath hooks
 
 ## Cross-references
 
-- [vade-app/vade-agent-logs#381](https://github.com/vade-app/vade-agent-logs/issues/381) — implementation issue.
-- [vade-coo-memory#864](https://github.com/vade-app/vade-coo-memory/pull/864) — merged spec proposal.
+- [coo-labs/coo-logs#381](https://github.com/coo-labs/coo-logs/issues/381) — implementation issue.
+- [coo-labs/coo-memory#864](https://github.com/coo-labs/coo-memory/pull/864) — merged spec proposal.
 - [anthropics/claude-code#53516](https://github.com/anthropics/claude-code/issues/53516) — community schema-stability ask.
